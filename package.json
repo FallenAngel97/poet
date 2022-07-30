@@ -24,7 +24,8 @@
     "url": "http://github.com/jsantell/poet"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --exit --reporter spec --ui bdd"
+    "test": "./node_modules/.bin/mocha --exit --reporter spec --ui bdd",
+		"test:watch": "mocha --watch"
   },
   "keywords": [
     "blog",
