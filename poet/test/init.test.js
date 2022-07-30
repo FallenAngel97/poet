@@ -2,7 +2,6 @@ var
   Poet = require('../poet'),
   express = require('express'),
   chai = require('chai'),
-  should = chai.should(),
   expect = chai.expect;
 
 describe('Init', function () {

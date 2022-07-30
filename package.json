@@ -1,6 +1,9 @@
 {
   "private": true,
-  "workspaces": ["poet-examples", "poet"],
+  "workspaces": [
+    "poet-examples",
+    "poet"
+  ],
   "dependencies": {
     "front-matter": ">= 0.1.x",
     "fs-then": "0.1.x",
@@ -13,8 +16,7 @@
   "devDependencies": {
     "chai": ">= 1.1.1",
     "express": ">= 4.5.0",
-    "mocha": "^9.0.2",
-    "supertest": ">= 0.0.1"
+    "mocha": "^9.0.2"
   },
   "scripts": {
     "test": "yarn --cwd poet test",
