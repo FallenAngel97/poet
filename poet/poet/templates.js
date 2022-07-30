@@ -1,6 +1,6 @@
 const
-  markdown = require('marked'),
-  renderer = new markdown.Renderer(),
+  { marked, Renderer } = require('marked'),
+  renderer = new Renderer(),
   pug = require('pug').compile;
 
 renderer.heading = function(text, level) {
@@ -8,7 +8,7 @@ renderer.heading = function(text, level) {
 };
 
 // Configure defaults for marked to keep compatibility
-markdown.setOptions({
+marked.setOptions({
   renderer: renderer,
   pedantic: true
 });
@@ -16,11 +16,11 @@ markdown.setOptions({
 module.exports = {
   templates: {
     pug: (options) => pug(options.source, {filename: options.filename})(options.locals),
-    markdown: (options) => markdown(options.source),
-    md: (options) => markdown(options.source)
+    markdown: (options) => marked.parse(options.source),
+    md: (options) => marked.parse(options.source)
   },
   templateEngines: {
-    marked: markdown,
+    marked,
     pug
   }
 };
