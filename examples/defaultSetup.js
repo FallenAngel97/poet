@@ -2,7 +2,7 @@ var
   express = require('express'),
   app = express(),
   // All default options
-  poet = require('../lib/poet')(app);
+  poet = require('poet')(app);
 
 poet.init().then(function () {
   // initialized

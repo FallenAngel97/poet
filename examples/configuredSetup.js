@@ -1,7 +1,7 @@
 var
   express = require('express'),
   app = express(),
-  Poet = require('../lib/poet');
+  Poet = require('poet');
 
 var poet = Poet(app, {
   postsPerPage: 3,

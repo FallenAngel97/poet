@@ -1,4 +1,4 @@
-var
+const
   fs = require('fs'),
   templateSources = require('./poet/templates'),
   createHelpers = require('./poet/helpers'),
@@ -7,37 +7,39 @@ var
   utils = require('./poet/utils'),
   method = utils.method;
 
-function Poet (app, options) {
-  this.app = app;
-
+class Poet {
   // Set up a hash of posts and a cache for storing sorted array
   // versions of posts, tags, and categories for the helper
-  this.posts = {};
-  this.cache = {};
-
-  // Merge options with defaults
-  this.options = utils.createOptions(options);
-
-  // Set up default templates (markdown, pug)
-  this.templates = templateSources.templates;
-
-  // Template engines are exposed so you may do additional configuration
-  this.templateEngines = templateSources.templateEngines;
-
-  // Construct helper methods
-  this.helpers = createHelpers(this);
+  posts = {};
+  cache = {};
 
   // Initialize empty watchers list
-  this.watchers = [];
+  watchers = [];
 
   // Initialize empty "futures" list
-  this.futures = [];
+  futures = [];
 
-  // Bind locals for view access
-  utils.createLocals(this.app, this.helpers);
+  constructor(app, options) {
+    this.app = app;
 
-  // Bind routes to express app based off of options
-  routes.bindRoutes(this);
+    // Merge options with defaults
+    this.options = utils.createOptions(options);
+
+    // Set up default templates (markdown, pug)
+    this.templates = templateSources.templates;
+
+    // Template engines are exposed so you may do additional configuration
+    this.templateEngines = templateSources.templateEngines;
+
+    // Construct helper methods
+    this.helpers = createHelpers(this);
+
+    // Bind locals for view access
+    utils.createLocals(this.app, this.helpers);
+
+    // Bind routes to express app based off of options
+    routes.bindRoutes(this);
+  }
 }
 
 module.exports = function (app, options) {

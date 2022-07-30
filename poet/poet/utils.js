@@ -215,7 +215,7 @@ exports.getTags = getTags;
  */
 
 function getCategories (posts) {
-  var categories = posts.reduce((categories, post) => {
+  const categories = posts.reduce((categories, post) => {
     if (!post.category) return categories;
     return categories.concat(post.category);
   }, []);
@@ -251,6 +251,7 @@ exports.getRouteType = getRouteType;
 
 function getRoute (routes, type) {
   if (!routes) return null;
+
   return Object.keys(routes).reduce((match, route) => getRouteType(route) === type ? route : match, null);
 }
 exports.getRoute = getRoute;

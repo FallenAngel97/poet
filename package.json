@@ -1,8 +1,6 @@
 {
-  "name": "poet",
-  "description": "quick and easy blog module",
-  "version": "4.0.0",
-  "main": "lib/poet",
+  "private": true,
+  "workspaces": ["poet-examples", "poet"],
   "dependencies": {
     "front-matter": ">= 0.1.x",
     "fs-then": "0.1.x",
@@ -18,25 +16,8 @@
     "mocha": "^9.0.2",
     "supertest": ">= 0.0.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/jsantell/poet"
-  },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --exit --reporter spec --ui bdd",
-    "test:watch": "mocha --watch"
-  },
-  "keywords": [
-    "blog",
-    "blogging",
-    "markdown",
-    "pug",
-    "posts",
-    "writing"
-  ],
-  "author": {
-    "name": "Jordan Santell",
-    "url": "http://github.com/jsantell"
-  },
-  "license": "MIT"
+    "test": "yarn --cwd poet test",
+    "test:watch": "yarn --cwd poet test:watch"
+  }
 }

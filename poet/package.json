@@ -1,0 +1,27 @@
+{
+  "name": "poet",
+  "description": "quick and easy blog module",
+  "version": "4.0.0",
+  "main": "poet",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/FallenAngel97/poet"
+  },
+  "scripts": {
+    "test": "mocha --exit --reporter spec --ui bdd",
+    "test:watch": "mocha --watch"
+  },
+  "keywords": [
+    "blog",
+    "blogging",
+    "markdown",
+    "pug",
+    "posts",
+    "writing"
+  ],
+  "author": {
+    "name": "Jordan Santell",
+    "url": "http://github.com/jsantell"
+  },
+  "license": "MIT"
+}

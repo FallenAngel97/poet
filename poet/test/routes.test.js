@@ -1,10 +1,10 @@
 var
-  Poet    = require('../lib/poet'),
+  Poet    = require('../poet'),
   express = require('express'),
   chai    = require('chai'),
   should  = chai.should(),
   expect  = chai.expect,
-  routes  = require('../lib/poet/routes'),
+  routes  = require('../poet/routes'),
   reqMock = require('./helpers/routeMocks').req,
   resMock = require('./helpers/routeMocks').res,
   routeInfo = require('./helpers/routeInfo');

@@ -1,5 +1,5 @@
 var
-  Poet = require('../lib/poet'),
+  Poet = require('../poet'),
   express = require('express'),
   chai = require('chai'),
   should = chai.should(),
