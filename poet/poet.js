@@ -40,6 +40,21 @@ class Poet {
     // Bind routes to express app based off of options
     routes.bindRoutes(this);
   }
+
+  getLinks(flatten) {
+    const postCount = this.helpers.getPostCount();
+    const posts = this.helpers.getPosts(0, postCount).map((post) => post.url);
+    const tags = this.helpers.getTags().map((tag) => `/tag/${tag}`);
+    const categories = this.helpers.getCategories().map((category) => `/category/${category}`);
+    if(flatten) {
+      return [
+        ...posts,
+        ...tags,
+        ...categories
+      ]
+    }
+    return { posts, tags, categories };
+  }
 }
 
 module.exports = function (app, options) {

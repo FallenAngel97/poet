@@ -1,7 +1,7 @@
 var
   express = require('express'),
   app = express(),
-  poet = require('../lib/poet')(app);
+  poet = require('poet')(app);
 
 poet.init().then(function () {
   // initialized
@@ -17,6 +17,7 @@ app.get('/sitemap.xml', function (req, res) {
   // Only get the latest posts
   var postCount = poet.helpers.getPostCount();
   var posts = poet.helpers.getPosts(0, postCount);
+  console.log(poet.getLinks(true));
   res.setHeader('Content-Type', 'application/xml');
   res.render('sitemap', { posts: posts });
 });
