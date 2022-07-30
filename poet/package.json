@@ -1,7 +1,7 @@
 {
-  "name": "poet",
+  "name": "@decodeapps/neopoet",
   "description": "quick and easy blog module",
-  "version": "4.0.0",
+  "version": "4.0.2",
   "main": "poet",
   "repository": {
     "type": "git",
@@ -10,6 +10,15 @@
   "scripts": {
     "test": "mocha --exit --reporter spec --ui bdd",
     "test:watch": "mocha --watch"
+  },
+  "dependencies": {
+    "front-matter": ">= 0.1.x",
+    "fs-then": "0.1.x",
+    "json-front-matter": ">= 0.1.4",
+    "jstransformer": "^1.0.0",
+    "marked": ">=0.6.2",
+    "pug": "^3.0.2",
+    "when": "2.1.x"
   },
   "keywords": [
     "blog",

@@ -6,6 +6,6 @@
   ],
   "private": true,
   "dependencies": {
-		"poet": "*"
+		"@decodeapps/neopoet": "workspace:*"
   }
 }
