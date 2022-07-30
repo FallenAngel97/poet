@@ -10,7 +10,6 @@ renderer.heading = function(text, level) {
 // Configure defaults for marked to keep compatibility
 markdown.setOptions({
   renderer: renderer,
-  sanitize: false,
   pedantic: true
 });
 

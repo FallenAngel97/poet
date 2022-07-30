@@ -156,18 +156,14 @@ describe('Templating', function () {
   });
 
   it('should expose registered template engines on templateEngines', function () {
-    var
+    const
       app = express(),
       poet = Poet(app, {
         posts: './test/_postsJson'
       });
 
-    poet.templateEngines.marked.setOptions({
-      sanitize: true
-    });
-
     poet.init().then(function () {
-      var posts = poet.posts;
+      const posts = poet.posts;
       posts['test-post-three'].content.should.not.contain(scriptBody);
     });
   });
