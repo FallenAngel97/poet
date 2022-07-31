@@ -1,7 +1,7 @@
 var
   express = require('express'),
   app = express(),
-  Poet = require('poet');
+  Poet = require('@decodeapps/neopoet');
 
 var poet = Poet(app, {
   postsPerPage: 3,

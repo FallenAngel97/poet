@@ -2,7 +2,7 @@ var
   express = require('express'),
   app = express(),
   // All default options
-  poet = require('../lib/poet')(app);
+  poet = require('@decodeapps/neopoet')(app);
 
 poet.watch(function () {
   // watcher reloaded

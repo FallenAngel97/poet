@@ -2,7 +2,7 @@ var
   express = require('express'),
   app = express(),
   // All default options
-  poet = require('poet')(app);
+  poet = require('@decodeapps/neopoet')(app);
 
 poet.init().then(function () {
   // initialized

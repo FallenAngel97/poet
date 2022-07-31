@@ -1,7 +1,7 @@
 var
   express = require( 'express' ),
   app = express(),
-  Poet = require('../lib/poet');
+  Poet = require('@decodeapps/neopoet');
 
 /**
  * Instantiate and hook Poet into express; no defaults defined

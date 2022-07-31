@@ -1,7 +1,7 @@
 var
   express = require('express'),
   app = express(),
-  poet = require('../lib/poet')(app);
+  poet = require('@decodeapps/neopoet')(app);
 
 poet.init().then(function () {
   // initialized
