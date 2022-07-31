@@ -12,6 +12,6 @@
   "scripts": {
     "test": "yarn --cwd poet test",
     "start": "cd ./examples && node ./defaultSetup.js",
-    "test:watch": "yarn --cwd poet test:watch"
+    "test:watch": "yarn --cwd @decodeapps/neopoet test:watch"
   }
 }

@@ -9,8 +9,7 @@ renderer.heading = function(text, level) {
 
 // Configure defaults for marked to keep compatibility
 marked.setOptions({
-  renderer: renderer,
-  pedantic: true
+  renderer: renderer
 });
 
 module.exports = {

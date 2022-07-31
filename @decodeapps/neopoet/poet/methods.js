@@ -66,7 +66,7 @@ function init (poet, callback) {
       // Do the templating and adding to poet instance
       // here for access to the file name
       var post = utils.createPost(file, options).then(function(post) {
-        var viewOpts = {
+        const viewOpts = {
           source: '',
           filename: file,
           locals: poet.app ? poet.app.locals : {}
