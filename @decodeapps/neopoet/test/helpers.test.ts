@@ -1,9 +1,8 @@
-var
-  Poet = require('../poet'),
-  express = require('express'),
-  chai = require('chai'),
-  should = chai.should(),
-  expect = chai.expect;
+import Poet from '../poet';
+import express from 'express';
+import chai from 'chai';
+
+const expect = chai.expect;
 
 describe('helpers.getTags()', function () {
   it('should return all tags, sorted and unique', function (done) {

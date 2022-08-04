@@ -1,8 +1,8 @@
-var
-  Poet = require('../poet'),
-  express = require('express'),
-  chai = require('chai'),
-  expect = chai.expect;
+import Poet from '../poet';
+import express from 'express';
+import chai from 'chai';
+
+const expect = chai.expect;
 
 describe('Init', function () {
   it('should set up the posts, helpers on completion', function (done) {
@@ -82,9 +82,9 @@ describe('Init', function () {
       });
 
     poet.init().then(function () {
-      expect(poet.options.posts).to.be.ok;
-      expect(poet.options.mycat).to.be.ok;
-      poet.options.mycat.should.equal('IsCool');
+      expect(poet.options!.posts).to.be.ok;
+      expect(poet.options!.mycat).to.be.ok;
+      poet.options!.mycat.should.equal('IsCool');
       done();
     });
   });

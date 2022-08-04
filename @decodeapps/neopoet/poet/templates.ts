@@ -1,7 +1,6 @@
-const
-  { marked, Renderer } = require('marked'),
-  renderer = new Renderer(),
-  pug = require('pug').compile;
+import { marked, Renderer } from 'marked';
+const renderer = new Renderer();
+import { compile as pug } from 'pug';
 
 renderer.heading = function(text, level) {
 	return `<h${level}>${text}</h${level}>\n`;
@@ -12,7 +11,7 @@ marked.setOptions({
   renderer: renderer
 });
 
-module.exports = {
+export default {
   templates: {
     pug: (options) => pug(options.source, {filename: options.filename})(options.locals),
     markdown: (options) => marked.parse(options.source),

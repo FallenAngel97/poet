@@ -1,11 +1,11 @@
-var
-  Poet = require('../poet'),
-  express = require('express'),
-  chai = require('chai'),
-  should = chai.should(),
-  expect = chai.expect;
+import  Poet from '../poet';
+import  express from 'express';
+import  chai from 'chai';
 
-var
+const should = chai.should();
+const expect = chai.expect;
+
+const
   readMoreLink = '<a href="/post/test-post-two">Test Post Two</a>';
 
 describe('Options', function () {

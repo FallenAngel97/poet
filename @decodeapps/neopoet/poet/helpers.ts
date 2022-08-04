@@ -1,4 +1,4 @@
-const utils = require('./utils');
+import utils from './utils';
 
 function createHelpers (poet) {
   var options = poet.options;
@@ -19,7 +19,7 @@ function createHelpers (poet) {
     },
     getPostCount: function () { return this.getPosts().length; },
     getPost: (title) => poet.posts[title],
-    getPosts: function (from, to) {
+    getPosts: function (from?, to?) {
       let posts = getPosts(poet);
       if (from != null && to != null)
         posts = posts.slice(from, to);
@@ -32,23 +32,9 @@ function createHelpers (poet) {
     options: options
   };
 
-  /* Compatability aliases that have been deprecated */
-  helpers.pageUrl = helpers.pageURL;
-  helpers.tagUrl = helpers.tagURL;
-  helpers.categoryUrl = helpers.categoryURL;
-  helpers.sortedPostsWithCategory = helpers.postsWithCategory;
-  helpers.sortedPostsWithTag = helpers.postsWithTag;
-
-  /*
-   * Removed helpers:
-   * `postList`
-   * `tagList`
-   * `categoryList`
-   */
-
   return helpers;
 }
-module.exports = createHelpers;
+export default createHelpers;
 
 /**
  * Takes a `poet` instance and returns the posts in sorted, array form

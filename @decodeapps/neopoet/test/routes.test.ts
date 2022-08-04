@@ -1,13 +1,11 @@
-var
-  Poet    = require('../poet'),
-  express = require('express'),
-  chai    = require('chai'),
-  should  = chai.should(),
-  expect  = chai.expect,
-  routes  = require('../poet/routes'),
-  reqMock = require('./helpers/routeMocks').req,
-  resMock = require('./helpers/routeMocks').res,
-  routeInfo = require('./helpers/routeInfo');
+import  Poet    from '../poet';
+import  express from 'express';
+import  chai    from 'chai';
+import routes  from '../poet/routes';
+import { req as reqMock, res as resMock } from './helpers/routeMocks';
+import  routeInfo from './helpers/routeInfo';
+
+const  expect  = chai.expect;
 
 describe('Routes', function () {
   it('should make the correct auto routes by default', function (done) {

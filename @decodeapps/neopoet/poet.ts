@@ -1,25 +1,49 @@
-const
-  fs = require('fs'),
-  templateSources = require('./poet/templates'),
-  createHelpers = require('./poet/helpers'),
-  routes = require('./poet/routes'),
-  methods = require('./poet/methods'),
-  utils = require('./poet/utils'),
-  method = utils.method;
+import templateSources from './poet/templates';
+import createHelpers from './poet/helpers';
+import routes from './poet/routes';
+import methods from './poet/methods';
+import utils from './poet/utils';
+import type { watch } from 'fs';
 
-class Poet {
+const method = utils.method;
+
+import type { PoetOptions } from './poet/defaults';
+
+type PoetInitCallback = (...args: any) => void;
+
+type PoetWatchers = {
+  watcher: ReturnType<typeof watch>;
+  callback: () => void;
+}
+
+export interface Poet {
+  addTemplate: (...args: any) => Poet;
+  init: (callback?: PoetInitCallback, options?: PoetOptions) => Promise<void>;
+  clearCache: () => void;
+  addRoute: (...args: any) => void;
+  watch: (...args: any) => void;
+  unwatch: () => void;
+  watchers: PoetWatchers[];
+}
+
+export class Poet {
+  app: any;
+  options: PoetOptions;
+  templates: any;
+  templateEngines: any;
+  helpers: ReturnType<typeof createHelpers>;
   // Set up a hash of posts and a cache for storing sorted array
   // versions of posts, tags, and categories for the helper
   posts = {};
   cache = {};
 
   // Initialize empty watchers list
-  watchers = [];
+  watchers = [] as PoetWatchers[];
 
   // Initialize empty "futures" list
-  futures = [];
+  futures = [] as NodeJS.Timeout[];
 
-  constructor(app, options) {
+  constructor(app: any, options?: Partial<PoetOptions>) {
     this.app = app;
 
     // Merge options with defaults
@@ -41,7 +65,7 @@ class Poet {
     routes.bindRoutes(this);
   }
 
-  getLinks(flatten) {
+  getLinks(flatten: boolean) {
     const postCount = this.helpers.getPostCount();
     const posts = this.helpers.getPosts(0, postCount).map((post) => post.url);
     const tags = this.helpers.getTags().map((tag) => `/tag/${tag}`);
@@ -57,7 +81,7 @@ class Poet {
   }
 }
 
-module.exports = function (app, options) {
+export default function (app: any, options?: Partial<PoetOptions>) {
   return new Poet(app, options);
 };
 

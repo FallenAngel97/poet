@@ -1,9 +1,9 @@
-const utils = require('./utils');
+import utils from "./utils";
 const routeMap = {
   post: postRouteGenerator,
   page: pageRouteGenerator,
   tag: tagRouteGenerator,
-  category: categoryRouteGenerator
+  category: categoryRouteGenerator,
 };
 
 /**
@@ -13,7 +13,7 @@ const routeMap = {
  * @params {Object} poet
  */
 
-function bindRoutes (poet) {
+export function bindRoutes(poet) {
   var app = poet.app;
   const { routes } = poet.options;
 
@@ -27,17 +27,20 @@ function bindRoutes (poet) {
     app.get(route, routeMap[type](poet, routes[route]));
   });
 }
-exports.bindRoutes = bindRoutes;
 
-function addRoute (poet, route, handler) {
+export function addRoute(poet, route, handler) {
   var routes = poet.options.routes;
   var type = utils.getRouteType(route);
   var currentRoute = utils.getRoute(routes, type);
   if (currentRoute) {
     // Remove current route
     poet.app._router.stack.forEach(function (stackItem, index) {
-      if (stackItem.route && stackItem.route.path && stackItem.route.path === route) {
-          poet.app._router.stack.splice(index, 1);
+      if (
+        stackItem.route &&
+        stackItem.route.path &&
+        stackItem.route.path === route
+      ) {
+        poet.app._router.stack.splice(index, 1);
       }
     });
     // Update options route hash
@@ -47,10 +50,9 @@ function addRoute (poet, route, handler) {
   poet.app.get(route, handler);
   return poet;
 }
-exports.addRoute = addRoute;
 
-function postRouteGenerator (poet, view) {
-  return function postRoute (req, res, next) {
+export function postRouteGenerator(poet?, view?) {
+  return function postRoute(req, res, next) {
     var post = poet.helpers.getPost(req.params.post);
     if (post) {
       res.render(view, { post: post });
@@ -59,12 +61,10 @@ function postRouteGenerator (poet, view) {
     }
   };
 }
-exports.postRouteGenerator = postRouteGenerator;
 
-function pageRouteGenerator (poet, view) {
-  return function pageRoute (req, res, next) {
-    var
-      postsPerPage = poet.options.postsPerPage,
+export function pageRouteGenerator(poet?, view?) {
+  return function pageRoute(req, res, next) {
+    var postsPerPage = poet.options.postsPerPage,
       page = req.params.page,
       lastPost = page * postsPerPage,
       posts = poet.helpers.getPosts(lastPost - postsPerPage, lastPost);
@@ -75,12 +75,10 @@ function pageRouteGenerator (poet, view) {
     }
   };
 }
-exports.pageRouteGenerator = pageRouteGenerator;
 
-function categoryRouteGenerator (poet, view) {
-  return function categoryRoute (req, res, next) {
-    var
-      category = req.params.category,
+export function categoryRouteGenerator(poet?, view?) {
+  return function categoryRoute(req, res, next) {
+    var category = req.params.category,
       posts = poet.helpers.postsWithCategory(category);
     if (posts.length) {
       res.render(view, { posts, category });
@@ -89,12 +87,10 @@ function categoryRouteGenerator (poet, view) {
     }
   };
 }
-exports.categoryRouteGenerator = categoryRouteGenerator;
 
-function tagRouteGenerator (poet, view) {
-  return function tagRoute (req, res, next) {
-    var
-      tag = req.params.tag,
+export function tagRouteGenerator(poet?, view?) {
+  return function tagRoute(req, res, next) {
+    var tag = req.params.tag,
       posts = poet.helpers.postsWithTag(tag);
     if (posts.length) {
       res.render(view, { posts, tag });
@@ -103,4 +99,12 @@ function tagRouteGenerator (poet, view) {
     }
   };
 }
-exports.tagRouteGenerator = tagRouteGenerator;
+
+export default {
+  postRouteGenerator,
+  categoryRouteGenerator,
+  bindRoutes,
+  tagRouteGenerator,
+  pageRouteGenerator,
+  addRoute,
+};

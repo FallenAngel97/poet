@@ -1,6 +1,5 @@
-var
-  Poet = require('../poet'),
-  express = require('express');
+import  Poet from '../poet';
+import  express from 'express';
 
 var pEl = "<p><em>Lorem ipsum</em> dolor sit amet, consectetur adipisicing elit.</p>";
 var h1El = "<h1>Header 1</h1>";

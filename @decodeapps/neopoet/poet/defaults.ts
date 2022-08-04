@@ -1,16 +1,35 @@
-function readMoreLink (post) {
+export type Post = {
+  url: string;
+  title: string;
+  slug: string;
+  date: Date;
+}
+
+function readMoreLink (post: Post) {
   let anchor = `<a href="${post.url}"`;
   anchor += ' title="Read more of ' + post.title + '">read more</a>';
   return '<p class="poet-read-more">' + anchor + '</p>';
 }
 
+export type PoetOptions = {
+  postsPerPage: number;
+  posts: string;
+  showDrafts: boolean;
+  showFuture: boolean;
+  metaFormat: 'json' | 'yaml';
+  readMoreLink: (post: Post) => string;
+  readMoreTag: string;
+  routes: Record<string, string> | null;
+
+  [key: string]: any;
+}
+
 /**
  * Returns a fresh copy of default options
  *
- * @returns {Object}
  */
 
-function createDefaults () {
+function createDefaultOptions (): PoetOptions {
  return {
     postsPerPage: 5,
     posts: './_posts/',
@@ -27,4 +46,5 @@ function createDefaults () {
     }
   };
 }
-module.exports = createDefaults;
+
+export default createDefaultOptions;

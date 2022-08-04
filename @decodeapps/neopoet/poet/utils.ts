@@ -1,10 +1,9 @@
-const
-  fs = require('fs-then'),
-  path = require('path'),
-  all = require('when').all,
-  yamlFm = require('front-matter'),
-  jsonFm = require('json-front-matter').parse,
-  createDefaults = require('./defaults');
+import fs from "fs-then";
+import path from "path";
+import { all } from "when";
+import yamlFm from "front-matter";
+import { parse as jsonFm } from "json-front-matter";
+import createDefaults from "./defaults";
 
 /**
  * Takes an `options` object and merges with the default, creating
@@ -14,10 +13,9 @@ const
  * @returns {Object}
  */
 
-function createOptions (options) {
+export function createOptions(options) {
   return Object.assign({}, createDefaults(), options || {});
 }
-exports.createOptions = createOptions;
 
 /**
  * Takes a `route` string (ex: '/posts/:post') and replaces the parameter with
@@ -28,13 +26,12 @@ exports.createOptions = createOptions;
  * @returns {String}
  */
 
-function createURL (route, value) {
+export function createURL(route, value) {
   if (!route) {
-    return '';
+    return "";
   }
   return encodeURI(route.match(/[^\:]*/)[0] + value);
 }
-exports.createURL = createURL;
 
 /**
  * Recursively search `dir` and return all file paths as strings in
@@ -44,19 +41,21 @@ exports.createURL = createURL;
  * @returns {Array}
  */
 
-function getPostPaths (dir) {
-  return fs.readdir(dir).then((files) => {
-    return all(files.map((file) => {
-      const path = pathify(dir, file);
-      return fs.stat(path).then((stats) => {
-        return stats.isDirectory() ?
-          getPostPaths(path) :
-          path;
-      });
-    }));
-  }).then((files) => files.flat());
+export function getPostPaths(dir) {
+  return fs
+    .readdir(dir)
+    .then((files) => {
+      return all(
+        files.map((file) => {
+          const path = pathify(dir, file);
+          return fs.stat(path).then((stats) => {
+            return stats.isDirectory() ? getPostPaths(path) : path;
+          });
+        })
+      );
+    })
+    .then((files) => files.flat());
 }
-exports.getPostPaths = getPostPaths;
 
 /**
  * Takes an express `app` and object of `helpers`
@@ -67,8 +66,8 @@ exports.getPostPaths = getPostPaths;
  * @params {Object} helpers
  */
 
-function createLocals (app, helpers) {
-    Object.assign(app.locals, helpers);
+function createLocals(app, helpers) {
+  Object.assign(app.locals, helpers);
 }
 exports.createLocals = createLocals;
 
@@ -86,7 +85,7 @@ exports.createLocals = createLocals;
  * @return {String}
  */
 
-function getPreview (post, body, options) {
+export function getPreview(post, body, options) {
   const readMoreTag = options.readMoreTag || post.readMoreTag;
   let preview;
   if (post.preview) {
@@ -96,12 +95,11 @@ function getPreview (post, body, options) {
   } else if (~body.indexOf(readMoreTag)) {
     preview = body.split(readMoreTag)[0];
   } else {
-    preview = body.trim().replace(/\n.*/g, '');
+    preview = body.trim().replace(/\n.*/g, "");
   }
 
   return preview;
 }
-exports.getPreview = getPreview;
 
 /**
  * Takes `lambda` function and returns a method. When returned method is
@@ -112,12 +110,14 @@ exports.getPreview = getPreview;
  * @returns {Function}
  */
 
-function method (lambda) {
-  return function () {
-    return lambda.apply(null, [this].concat(Array.prototype.slice.call(arguments, 0)));
+export function method(lambda) {
+  return function (this:any) {
+    return lambda.apply(
+      null,
+      [this].concat(Array.prototype.slice.call(arguments, 0))
+    );
   };
 }
-exports.method = method;
 
 /**
  * Takes a templates hash `templates` and a fileName
@@ -128,19 +128,17 @@ exports.method = method;
  * @returns {Function|null}
  */
 
-function getTemplate (templates, fileName) {
+export function getTemplate(templates, fileName) {
   const extMatch = fileName.match(/\.([^\.]*)$/);
-  if (extMatch && extMatch.length > 1)
-    return templates[extMatch[1]];
+  if (extMatch && extMatch.length > 1) return templates[extMatch[1]];
   return null;
 }
-exports.getTemplate = getTemplate;
 
-function convertStringToSlug(str){
+function convertStringToSlug(str) {
   return str
     .toLowerCase()
-    .replace(/[^\w- ]+/g,'')
-    .replace(/ +/g,'-');
+    .replace(/[^\w- ]+/g, "")
+    .replace(/ +/g, "-");
 }
 
 /**
@@ -153,9 +151,9 @@ function convertStringToSlug(str){
  * @returns {Object}
  */
 
-function createPost (filePath, options) {
-  return fs.readFile(filePath, 'utf-8').then((data) => {
-    const parsed = (options.metaFormat === 'yaml' ? yamlFm : jsonFm)(data);
+export function createPost(filePath, options) {
+  return fs.readFile(filePath, "utf-8").then((data) => {
+    const parsed = (options.metaFormat === "yaml" ? yamlFm : jsonFm)(data);
     const body = parsed.body;
     const post = parsed.attributes;
     // If no date defined, create one for current date
@@ -163,12 +161,11 @@ function createPost (filePath, options) {
     post.content = body;
     // url slug for post
     post.slug = convertStringToSlug(post.slug || post.title);
-    post.url = createURL(getRoute(options.routes, 'post'), post.slug);
+    post.url = createURL(getRoute(options.routes, "post"), post.slug);
     post.preview = getPreview(post, body, options);
     return post;
   });
 }
-exports.createPost = createPost;
 
 /**
  * Takes an array `posts` of post objects and returns a
@@ -178,15 +175,15 @@ exports.createPost = createPost;
  * @returns {Array}
  */
 
-function sortPosts (posts) {
-  return Object.keys(posts).map((post) => posts[post])
-    .sort((a,b) => {
-      if ( a.date < b.date ) return 1;
-      if ( a.date > b.date ) return -1;
+export function sortPosts(posts) {
+  return Object.keys(posts)
+    .map((post) => posts[post])
+    .sort((a, b) => {
+      if (a.date < b.date) return 1;
+      if (a.date > b.date) return -1;
       return 0;
     });
 }
-exports.sortPosts = sortPosts;
 
 /**
  * Takes an array `posts` of sorted posts and returns
@@ -196,7 +193,7 @@ exports.sortPosts = sortPosts;
  * @returns {Array}
  */
 
-function getTags (posts) {
+export function getTags(posts) {
   var tags = posts.reduce((tags, post) => {
     if (!post.tags || !Array.isArray(post.tags)) return tags;
     return tags.concat(post.tags);
@@ -204,7 +201,6 @@ function getTags (posts) {
 
   return [...new Set(tags)].sort();
 }
-exports.getTags = getTags;
 
 /**
  * Takes an array `posts` of sorted posts and returns
@@ -214,7 +210,7 @@ exports.getTags = getTags;
  * @returns {Array}
  */
 
-function getCategories (posts) {
+export function getCategories(posts) {
   const categories = posts.reduce((categories, post) => {
     if (!post.category) return categories;
     return categories.concat(post.category);
@@ -222,7 +218,6 @@ function getCategories (posts) {
 
   return [...new Set(categories)].sort();
 }
-exports.getCategories = getCategories;
 
 /**
  * Takes a `route` (ex: '/posts/:post') and returns
@@ -232,13 +227,11 @@ exports.getCategories = getCategories;
  * @returns {String}
  */
 
-function getRouteType (route) {
+export function getRouteType(route) {
   var match = route.match(/\:(post|page|tag|category)\b/);
-  if (match && match.length > 1)
-    return match[1];
+  if (match && match.length > 1) return match[1];
   return null;
 }
-exports.getRouteType = getRouteType;
 
 /**
  * Takes a hash of `routes`, and a `type` (ex: 'post'), and returns
@@ -249,12 +242,14 @@ exports.getRouteType = getRouteType;
  * @returns {String|Null}
  */
 
-function getRoute (routes, type) {
+export function getRoute(routes, type) {
   if (!routes) return null;
 
-  return Object.keys(routes).reduce((match, route) => getRouteType(route) === type ? route : match, null);
+  return Object.keys(routes).reduce(
+    (match: null | string, route) => (getRouteType(route) === type ? route : match),
+    null
+  );
 }
-exports.getRoute = getRoute;
 
 /**
  * Normalizes and joins a path of `dir` and optionally `file`
@@ -264,10 +259,25 @@ exports.getRoute = getRoute;
  * @returns {String}
  */
 
-function pathify (dir, file) {
-  if (file)
-    return path.normalize(path.join(dir, file));
+export function pathify(dir, file) {
+  if (file) return path.normalize(path.join(dir, file));
 
-	return path.normalize(dir);
+  return path.normalize(dir);
 }
-exports.pathify = pathify;
+
+export default {
+  pathify,
+  createLocals,
+  getCategories,
+  getRoute,
+  getRouteType,
+  getTags,
+  sortPosts,
+  createPost,
+  getTemplate,
+  method,
+  getPreview,
+  getPostPaths,
+  createURL,
+  createOptions,
+};
