@@ -4,6 +4,7 @@ import routes from './poet/routes';
 import methods from './poet/methods';
 import utils from './poet/utils';
 import type { watch } from 'fs';
+import { Application } from 'express';
 
 const method = utils.method;
 
@@ -27,7 +28,7 @@ export interface Poet {
 }
 
 export class Poet {
-  app: any;
+  app: Application;
   options: PoetOptions;
   templates: any;
   templateEngines: any;
@@ -81,7 +82,7 @@ export class Poet {
   }
 }
 
-export default function (app: any, options?: Partial<PoetOptions>) {
+export default function (app: Application, options?: Partial<PoetOptions>) {
   return new Poet(app, options);
 };
 

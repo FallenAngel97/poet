@@ -3,7 +3,7 @@ import path from "path";
 import { all } from "when";
 import yamlFm from "front-matter";
 import { parse as jsonFm } from "json-front-matter";
-import createDefaults from "./defaults";
+import createDefaults, { Post } from "./defaults";
 
 /**
  * Takes an `options` object and merges with the default, creating
@@ -134,7 +134,7 @@ export function getTemplate(templates, fileName) {
   return null;
 }
 
-function convertStringToSlug(str) {
+function convertStringToSlug(str: string) {
   return str
     .toLowerCase()
     .replace(/[^\w- ]+/g, "")
@@ -151,11 +151,11 @@ function convertStringToSlug(str) {
  * @returns {Object}
  */
 
-export function createPost(filePath, options) {
+export function createPost(filePath: string, options) {
   return fs.readFile(filePath, "utf-8").then((data) => {
     const parsed = (options.metaFormat === "yaml" ? yamlFm : jsonFm)(data);
     const body = parsed.body;
-    const post = parsed.attributes;
+    const post = parsed.attributes as Post;
     // If no date defined, create one for current date
     post.date = new Date(post.date);
     post.content = body;
@@ -171,11 +171,9 @@ export function createPost(filePath, options) {
  * Takes an array `posts` of post objects and returns a
  * new, sorted version based off of date
  *
- * @params {Array} posts
- * @returns {Array}
  */
 
-export function sortPosts(posts) {
+export function sortPosts(posts: Post[]) {
   return Object.keys(posts)
     .map((post) => posts[post])
     .sort((a, b) => {
@@ -188,16 +186,13 @@ export function sortPosts(posts) {
 /**
  * Takes an array `posts` of sorted posts and returns
  * a sorted array with all tags
- *
- * @params {Array} posts
- * @returns {Array}
  */
 
-export function getTags(posts) {
+export function getTags(posts: Post[]) {
   var tags = posts.reduce((tags, post) => {
     if (!post.tags || !Array.isArray(post.tags)) return tags;
     return tags.concat(post.tags);
-  }, []);
+  }, [] as string[]);
 
   return [...new Set(tags)].sort();
 }
@@ -206,15 +201,13 @@ export function getTags(posts) {
  * Takes an array `posts` of sorted posts and returns
  * a sorted array with all categories
  *
- * @params {Array} posts
- * @returns {Array}
  */
 
-export function getCategories(posts) {
+export function getCategories(posts: Post[]) {
   const categories = posts.reduce((categories, post) => {
     if (!post.category) return categories;
     return categories.concat(post.category);
-  }, []);
+  }, [] as string[]);
 
   return [...new Set(categories)].sort();
 }
@@ -222,12 +215,9 @@ export function getCategories(posts) {
 /**
  * Takes a `route` (ex: '/posts/:post') and returns
  * the name of the parameter (ex: 'post'), which should be a route type
- *
- * @params {String} route
- * @returns {String}
  */
 
-export function getRouteType(route) {
+export function getRouteType(route: string) {
   var match = route.match(/\:(post|page|tag|category)\b/);
   if (match && match.length > 1) return match[1];
   return null;
@@ -237,12 +227,9 @@ export function getRouteType(route) {
  * Takes a hash of `routes`, and a `type` (ex: 'post'), and returns
  * the corresponding route regex as a string. If no route found, returns `null`.
  *
- * @params {Object} routes
- * @params {String} type
- * @returns {String|Null}
  */
 
-export function getRoute(routes, type) {
+export function getRoute(routes: Record<string, unknown>, type: string): string | null {
   if (!routes) return null;
 
   return Object.keys(routes).reduce(
@@ -254,12 +241,9 @@ export function getRoute(routes, type) {
 /**
  * Normalizes and joins a path of `dir` and optionally `file`
  *
- * @params {String} dir
- * @params {String} file
- * @returns {String}
  */
 
-export function pathify(dir, file) {
+export function pathify(dir: string, file: string) {
   if (file) return path.normalize(path.join(dir, file));
 
   return path.normalize(dir);

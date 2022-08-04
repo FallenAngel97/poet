@@ -3,6 +3,10 @@ export type Post = {
   title: string;
   slug: string;
   date: Date;
+  category: string;
+  content: string;
+  preview: string;
+  tags: string[];
 }
 
 function readMoreLink (post: Post) {

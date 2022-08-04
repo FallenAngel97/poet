@@ -1,3 +1,4 @@
+import { Poet } from "../poet";
 import utils from "./utils";
 const routeMap = {
   post: postRouteGenerator,
@@ -28,10 +29,10 @@ export function bindRoutes(poet) {
   });
 }
 
-export function addRoute(poet, route, handler) {
+export function addRoute(poet: Poet, route, handler) {
   var routes = poet.options.routes;
-  var type = utils.getRouteType(route);
-  var currentRoute = utils.getRoute(routes, type);
+  var type = utils.getRouteType(route) || '';
+  var currentRoute = utils.getRoute(routes || {}, type);
   if (currentRoute) {
     // Remove current route
     poet.app._router.stack.forEach(function (stackItem, index) {
@@ -44,9 +45,9 @@ export function addRoute(poet, route, handler) {
       }
     });
     // Update options route hash
-    delete poet.options.routes[currentRoute];
+    delete poet.options.routes![currentRoute];
   }
-  poet.options.routes[route] = handler;
+  poet.options.routes![route] = handler;
   poet.app.get(route, handler);
   return poet;
 }
@@ -62,12 +63,12 @@ export function postRouteGenerator(poet?, view?) {
   };
 }
 
-export function pageRouteGenerator(poet?, view?) {
+export function pageRouteGenerator(poet?: Poet, view?: string) {
   return function pageRoute(req, res, next) {
-    var postsPerPage = poet.options.postsPerPage,
+    var postsPerPage = poet!.options.postsPerPage,
       page = req.params.page,
       lastPost = page * postsPerPage,
-      posts = poet.helpers.getPosts(lastPost - postsPerPage, lastPost);
+      posts = poet!.helpers.getPosts(lastPost - postsPerPage, lastPost);
     if (posts.length) {
       res.render(view, { posts, page });
     } else {
