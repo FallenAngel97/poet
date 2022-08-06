@@ -3,7 +3,7 @@ import  express from 'express';
 import  chai    from 'chai';
 import routes  from '../poet/routes';
 import { req as reqMock, res as resMock } from './helpers/routeMocks';
-import  routeInfo from './helpers/routeInfo';
+import routeInfo from './helpers/routeInfo';
 
 const  expect  = chai.expect;
 
@@ -113,7 +113,7 @@ describe('Routes', function () {
     var
       app = express(),
       poet = Poet(app),
-      handler = function (request, response) {};
+      handler = function () {};
 
     poet.addRoute('/myposts/:post', handler);
     poet.addRoute('/pagesss/:page', handler);

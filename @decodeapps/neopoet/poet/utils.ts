@@ -3,17 +3,18 @@ import path from "path";
 import { all } from "when";
 import yamlFm from "front-matter";
 import { parse as jsonFm } from "json-front-matter";
-import createDefaults, { Post } from "./defaults";
+import createDefaults, { PoetOptions, Post } from "./defaults";
+import type { Stats } from 'fs';
+import { Application } from "express";
+import type createHelpers from "./helpers";
+import { PostsMap } from "../poet";
 
 /**
  * Takes an `options` object and merges with the default, creating
  * a new object with
- *
- * @params {Object} options
- * @returns {Object}
  */
 
-export function createOptions(options) {
+export function createOptions(options: Partial<PoetOptions>): PoetOptions {
   return Object.assign({}, createDefaults(), options || {});
 }
 
@@ -21,40 +22,34 @@ export function createOptions(options) {
  * Takes a `route` string (ex: '/posts/:post') and replaces the parameter with
  * the `value` (ex: '/posts/my-post');
  *
- * @params {String} route
- * @params {String} value
- * @returns {String}
  */
 
-export function createURL(route, value) {
+export function createURL(route: string | null, value: string) {
   if (!route) {
     return "";
   }
-  return encodeURI(route.match(/[^\:]*/)[0] + value);
+  return encodeURI(route.match(/[^\:]*/)?.[0] + value);
 }
 
 /**
  * Recursively search `dir` and return all file paths as strings in
  * an array
- *
- * @params {String} dir
- * @returns {Array}
  */
 
-export function getPostPaths(dir) {
+export function getPostPaths(dir: string): Promise<string[]> {
   return fs
     .readdir(dir)
-    .then((files) => {
+    .then((files: string[]) => {
       return all(
         files.map((file) => {
           const path = pathify(dir, file);
-          return fs.stat(path).then((stats) => {
+          return fs.stat(path).then((stats: Stats) => {
             return stats.isDirectory() ? getPostPaths(path) : path;
           });
         })
       );
     })
-    .then((files) => files.flat());
+    .then((files: string[] | string[][]) => files.flat());
 }
 
 /**
@@ -66,10 +61,9 @@ export function getPostPaths(dir) {
  * @params {Object} helpers
  */
 
-function createLocals(app, helpers) {
+export function createLocals(app: Application, helpers: ReturnType<typeof createHelpers>) {
   Object.assign(app.locals, helpers);
 }
-exports.createLocals = createLocals;
 
 /**
  * Takes a `post` object, `body` text and an `options` object
@@ -78,20 +72,15 @@ exports.createLocals = createLocals;
  * finding a `readMoreTag` in the body.
  *
  * Otherwise, use the first paragraph in `body`.
- *
- * @params {Object} post
- * @params {String} body
- * @params {Object} options
- * @return {String}
  */
 
-export function getPreview(post, body, options) {
+export function getPreview(post: Post, body: string, options: PoetOptions) {
   const readMoreTag = options.readMoreTag || post.readMoreTag;
-  let preview;
+  let preview: string;
   if (post.preview) {
     preview = post.preview;
   } else if (post.previewLength) {
-    preview = body.trim().substr(0, post.previewLength);
+    preview = body.trim().substring(0, post.previewLength);
   } else if (~body.indexOf(readMoreTag)) {
     preview = body.split(readMoreTag)[0];
   } else {
@@ -105,12 +94,9 @@ export function getPreview(post, body, options) {
  * Takes `lambda` function and returns a method. When returned method is
  * invoked, it calls the wrapped `lambda` and passes `this` as a first argument
  * and given arguments as the rest.
- *
- * @params {Function} lambda
- * @returns {Function}
  */
 
-export function method(lambda) {
+export function method<T>(lambda: Function): () => T {
   return function (this:any) {
     return lambda.apply(
       null,
@@ -122,13 +108,9 @@ export function method(lambda) {
 /**
  * Takes a templates hash `templates` and a fileName
  * and returns a templating function if found
- *
- * @params {Object} templates
- * @params {String} fileName
- * @returns {Function|null}
  */
 
-export function getTemplate(templates, fileName) {
+export function getTemplate(templates: Record<string, Function>, fileName: string): Function | null {
   const extMatch = fileName.match(/\.([^\.]*)$/);
   if (extMatch && extMatch.length > 1) return templates[extMatch[1]];
   return null;
@@ -148,11 +130,10 @@ function convertStringToSlug(str: string) {
  * @params {String} data
  * @params {String} fileName
  * @params {Object} options
- * @returns {Object}
  */
 
-export function createPost(filePath: string, options) {
-  return fs.readFile(filePath, "utf-8").then((data) => {
+export function createPost(filePath: string, options: PoetOptions): Promise<Post> {
+  return fs.readFile(filePath, "utf-8").then((data: string) => {
     const parsed = (options.metaFormat === "yaml" ? yamlFm : jsonFm)(data);
     const body = parsed.body;
     const post = parsed.attributes as Post;
@@ -161,7 +142,7 @@ export function createPost(filePath: string, options) {
     post.content = body;
     // url slug for post
     post.slug = convertStringToSlug(post.slug || post.title);
-    post.url = createURL(getRoute(options.routes, "post"), post.slug);
+    post.url = createURL(getRoute(options.routes || {}, "post"), post.slug);
     post.preview = getPreview(post, body, options);
     return post;
   });
@@ -173,7 +154,7 @@ export function createPost(filePath: string, options) {
  *
  */
 
-export function sortPosts(posts: Post[]) {
+export function sortPosts(posts: PostsMap): Post[] {
   return Object.keys(posts)
     .map((post) => posts[post])
     .sort((a, b) => {
@@ -217,9 +198,11 @@ export function getCategories(posts: Post[]) {
  * the name of the parameter (ex: 'post'), which should be a route type
  */
 
-export function getRouteType(route: string) {
-  var match = route.match(/\:(post|page|tag|category)\b/);
-  if (match && match.length > 1) return match[1];
+export type PoetRoutes = 'post' | 'page' | 'tag' | 'category';
+
+export function getRouteType(route: string): PoetRoutes | null {
+  const match = route.match(/\:(post|page|tag|category)\b/);
+  if (match && match.length > 1) return match[1] as PoetRoutes;
   return null;
 }
 

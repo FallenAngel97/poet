@@ -1,13 +1,16 @@
-export type Post = {
+export type Post<T = {}> = {
   url: string;
   title: string;
   slug: string;
   date: Date;
   category: string;
+  previewLength: number;
+  draft: boolean;
   content: string;
   preview: string;
+  readMoreTag: string;
   tags: string[];
-}
+} & T;
 
 function readMoreLink (post: Post) {
   let anchor = `<a href="${post.url}"`;

@@ -1,5 +1,6 @@
 import  Poet from '../poet';
 import  express from 'express';
+import { PoetOptions } from '../poet/defaults';
 
 var pEl = "<p><em>Lorem ipsum</em> dolor sit amet, consectetur adipisicing elit.</p>";
 var h1El = "<h1>Header 1</h1>";
@@ -7,14 +8,14 @@ var scriptBody  = '<script>console.log(\'test\');</script>';
 
 describe('Templating', function () {
   it('should correctly compile markdown', function (done) {
-    var
+    const
       app = express(),
       poet = Poet(app, {
         posts: './test/_postsJson'
       });
 
     poet.init().then(function () {
-      var posts = poet.posts;
+      const posts = poet.posts;
       posts['test-post-one'].content.should.contain(pEl);
       posts['test-post-one'].content.should.contain(h1El);
       done();
@@ -72,7 +73,7 @@ describe('Templating', function () {
 
     poet.addTemplate({
       ext: 'custom',
-      fn: function (opts) {
+      fn: function (opts: PoetOptions) {
         return opts.source.replace(/\*(.*?)\*/g, '<$1>');
       }
     }).init().then(function () {
@@ -92,7 +93,7 @@ describe('Templating', function () {
 
     poet.addTemplate({
       ext: 'custom',
-      fn: function (opts, callback) {
+      fn: function (opts: PoetOptions, callback: Function) {
         callback(null, opts.source.replace(/\*(.*?)\*/g, '<$1>'));
       }
     }).init().then(function () {
@@ -118,7 +119,7 @@ describe('Templating', function () {
 
   describe('Errors', function() {
 
-    var realEnv;
+    let realEnv: string | undefined;
 
     beforeEach(function() { realEnv = process.env.NODE_ENV; });
 

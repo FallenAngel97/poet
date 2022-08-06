@@ -8,7 +8,7 @@ import { Application } from 'express';
 
 const method = utils.method;
 
-import type { PoetOptions } from './poet/defaults';
+import type { PoetOptions, Post } from './poet/defaults';
 
 type PoetInitCallback = (...args: any) => void;
 
@@ -19,13 +19,21 @@ type PoetWatchers = {
 
 export interface Poet {
   addTemplate: (...args: any) => Poet;
-  init: (callback?: PoetInitCallback, options?: PoetOptions) => Promise<void>;
+  init: (callback?: PoetInitCallback, options?: PoetOptions) => Promise<any>;
   clearCache: () => void;
   addRoute: (...args: any) => void;
   watch: (...args: any) => void;
   unwatch: () => void;
   watchers: PoetWatchers[];
 }
+
+export type PostsMap = { [postTitle: Post['title']]: Post };
+
+export type PoetCache = {
+  posts: Post[];
+  tags: string[];
+  categories: string[];
+};
 
 export class Poet {
   app: Application;
@@ -35,8 +43,8 @@ export class Poet {
   helpers: ReturnType<typeof createHelpers>;
   // Set up a hash of posts and a cache for storing sorted array
   // versions of posts, tags, and categories for the helper
-  posts = {};
-  cache = {};
+  posts = {} as PostsMap;
+  cache = {} as PoetCache;
 
   // Initialize empty watchers list
   watchers = [] as PoetWatchers[];
@@ -48,7 +56,7 @@ export class Poet {
     this.app = app;
 
     // Merge options with defaults
-    this.options = utils.createOptions(options);
+    this.options = utils.createOptions(options || {});
 
     // Set up default templates (markdown, pug)
     this.templates = templateSources.templates;

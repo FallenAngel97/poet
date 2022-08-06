@@ -1,5 +1,6 @@
 import  Poet from '../poet';
 import  express from 'express';
+import { Post } from '../poet/defaults';
 
 const
   postPreview = '<p><em>Lorem ipsum</em> dolor sit amet, consectetur adipisicing elit.</p>',
@@ -21,7 +22,7 @@ describe('Posts', function () {
       poet.init().then(function () {
         var posts = poet.helpers.getPosts();
         posts.should.have.length(6);
-        var post = poet.posts['test-post-one'];
+        var post = poet.posts['test-post-one'] as Post<{ arbitrary: string }>;
         post.slug.should.equal('test-post-one');
         post.tags.should.have.length(2);
         post.tags.should.include('a');
@@ -87,7 +88,7 @@ describe('Posts', function () {
         posts[2].tags.should.include('b');
         posts[2].category.should.equal('testing');
         posts[2].url.should.equal('/post/test-post-one');
-        posts[2].arbitrary.should.equal('arbitrary content');
+        (posts[2] as Post<{ arbitrary: string }>).arbitrary.should.equal('arbitrary content');
 
         // Also tests HTML rendering
         posts[2].preview.should.equal( postPreview + "\n" + readMoreAnchorp1 );

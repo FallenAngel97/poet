@@ -4,20 +4,17 @@ import nodefn from "when/node/function";
 import fn from "when/function";
 import utils from "./utils";
 import type { Post } from './defaults';
-import type { Poet } from '../poet';
+import type { Poet, PoetCache } from '../poet';
 
 /**
  * Adds `data.fn` as a template formatter for all files with
  * extension `data.ext`, which may be a string or an array of strings.
  * Adds to `poet` instance templates.
  *
- * @params {Poet} poet
- * @params {Object} data
- * @returns {Poet}
  */
 
 
-export function addTemplate(poet: Poet, data) {
+export function addTemplate(poet: Poet, data: any) {
   if (!data.ext || !data.fn)
     throw new Error(
       "Template must have both an extension and formatter function"
@@ -36,12 +33,9 @@ export function addTemplate(poet: Poet, data) {
  * with post objects and creates the instance's helper functions.
  * Returns a promise for completion.
  *
- * @params {Object} poet
- * @params {Function} [callback]
- * @returns {Promise}
  */
 
-export function init(poet: Poet, callback) {
+export function init(poet: Poet, callback: () => void): Promise<any> {
   const options = poet.options;
 
   // Get list of files in `options.posts` directory
@@ -51,7 +45,7 @@ export function init(poet: Poet, callback) {
       // Generate a collection of promises that resolve
       // to post objects
       var collection = files.reduce((coll, file) => {
-        var template = utils.getTemplate(poet.templates, file);
+        let template = utils.getTemplate(poet.templates, file);
 
         // If no template found, ignore (swap file, etc.)
         if (!template) return coll;
@@ -59,7 +53,7 @@ export function init(poet: Poet, callback) {
         // If template function accepts more than one argument, then handle 2nd
         // argument as asynchronous node-style callback function
         if (template.length > 1) {
-          template = function (template, string) {
+          template = function (template: any, string: string) {
             var result = defer();
             // @ts-ignore
             template(string, nodefn.createCallback(result.resolver));
@@ -78,7 +72,7 @@ export function init(poet: Poet, callback) {
               locals: poet.app ? poet.app.locals : {},
             };
             return when
-              .join(
+              .join<string>(
                 fn.call(
                   template,
                   Object.assign({}, viewOpts, { source: post.content })
@@ -112,9 +106,9 @@ export function init(poet: Poet, callback) {
           });
 
         return coll.concat(post);
-      }, []);
+      }, [] as Promise<Post | null>[]);
 
-      return all(collection);
+      return all<Post[]>(collection);
     })
     .then(function (allPosts) {
       // Schedule posts that need scheduling
@@ -137,7 +131,7 @@ export function init(poet: Poet, callback) {
  *
  */
 export function clearCache(poet: Poet) {
-  poet.cache = {};
+  poet.cache = {} as PoetCache;
   return poet;
 }
 
@@ -145,7 +139,7 @@ export function clearCache(poet: Poet) {
  * Sets up the `poet` instance to watch the posts directory for any changes
  * and calls the callback whenever a change is made
  */
-export function watch(poet: Poet, callback) {
+export function watch(poet: Poet, callback: () => void) {
   const watcher = fs.watch(poet.options.posts, () => {
     poet.init().then(callback);
   });
@@ -177,7 +171,7 @@ export function scheduleFutures(poet: Poet, allPosts: Post[]) {
   const extraTime = 5 * 1000; // 10 seconds buffer
   const min = now - extraTime;
 
-  allPosts.forEach(function (post, i) {
+  allPosts.forEach(function (post) {
     if (!post) return;
     const postTime = post.date.getTime();
 
