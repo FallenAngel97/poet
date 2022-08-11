@@ -5,4 +5,4 @@ const { version } = require('../package.json');
 template.version = version;
 
 console.log('Overriding package.json...');
-fs.writeFileSync('../package.json', JSON.stringify(template));
+fs.writeFileSync('./package.json', JSON.stringify(template));

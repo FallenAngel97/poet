@@ -1,7 +1,7 @@
 {
   "name": "@decodeapps/neopoet",
   "description": "quick and easy blog module",
-  "version": "4.0.6",
+  "version": "4.0.7",
   "main": "dist/poet.js",
   "types": "dist/poet.d.ts",
   "repository": {
@@ -15,8 +15,6 @@
     "prepublishOnly": "rimraf dist && yarn build && node ./scripts/clean.js"
   },
   "dependencies": {
-    "@types/marked": "^4.0.3",
-    "@types/pug": "^2.0.6",
     "front-matter": ">= 0.1.x",
     "fs-then": "0.1.x",
     "json-front-matter": ">= 0.1.4",
@@ -39,6 +37,8 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/marked": "^4.0.3",
+    "@types/pug": "^2.0.6",
     "@types/chai": "^4.3.1",
     "@types/express": "^4.17.13",
     "@types/mocha": "^9.1.1",
