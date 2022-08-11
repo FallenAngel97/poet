@@ -3,4 +3,4 @@ test
 scripts
 package-template.json
 .mocharc.json
-poet
+/poet
