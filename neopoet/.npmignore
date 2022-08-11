@@ -1,2 +1,5 @@
 yarn-error.log
 test
+scripts
+package-template.json
+.mocharc.json
