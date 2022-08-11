@@ -48,7 +48,7 @@ function getPosts (poet: Poet): Post[] {
   if (poet.cache.posts)
     return poet.cache.posts;
 
-  const posts = utils.sortPosts(poet.posts).filter((post) => {
+  const posts = utils.sortPosts(poet.posts, poet).filter((post) => {
     // Filter out draft posts if showDrafts is false
     return (poet.options.showDrafts || !post.draft) &&
     // Filter out posts in the future if showFuture is false

@@ -2,7 +2,7 @@
   "private": true,
   "workspaces": [
     "poet-examples",
-    "@decodeapps/neopoet"
+    "neopoet"
   ],
   "devDependencies": {
     "chai": ">= 1.1.1",
@@ -12,6 +12,6 @@
   "scripts": {
     "test": "yarn --cwd poet test",
     "start": "cd ./examples && node ./defaultSetup.js",
-    "test:watch": "yarn --cwd @decodeapps/neopoet test:watch"
+    "test:watch": "yarn --cwd neopoet test:watch"
   }
 }

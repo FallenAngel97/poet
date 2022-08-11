@@ -27,6 +27,7 @@ export type PoetOptions = {
   readMoreLink: (post: Post) => string;
   readMoreTag: string;
   routes: Record<string, string> | null;
+  sortingFunction?: (a: any, b: any) => 1 | -1 | 0;
 
   [key: string]: any;
 }

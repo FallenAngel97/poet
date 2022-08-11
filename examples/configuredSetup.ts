@@ -1,11 +1,16 @@
-var
-  express = require('express'),
-  app = express(),
-  Poet = require('@decodeapps/neopoet');
+import express from 'express';
+const app = express();
+import Poet from '@decodeapps/neopoet';
+import type { Post } from "@decodeapps/neopoet/poet/defaults";
 
 var poet = Poet(app, {
   postsPerPage: 3,
   posts: './_posts',
+  sortingFunction: (firstPost: Post, secondPost: Post) => {
+      if (firstPost.date > secondPost.date) return 1;
+      if (firstPost.date < secondPost.date) return -1;
+      return 0;
+  },
   metaFormat: 'json',
   routes: {
     '/myposts/:post': 'post',

@@ -2,3 +2,4 @@ node_modules
 .DS_Store
 *.sw*
 yarn-error.log
+dist

@@ -7,7 +7,7 @@ import createDefaults, { PoetOptions, Post } from "./defaults";
 import type { Stats } from 'fs';
 import { Application } from "express";
 import type createHelpers from "./helpers";
-import { PostsMap } from "../poet";
+import { Poet, PostsMap } from "../poet";
 
 /**
  * Takes an `options` object and merges with the default, creating
@@ -154,14 +154,15 @@ export function createPost(filePath: string, options: PoetOptions): Promise<Post
  *
  */
 
-export function sortPosts(posts: PostsMap): Post[] {
-  return Object.keys(posts)
-    .map((post) => posts[post])
-    .sort((a, b) => {
+export function sortPosts(posts: PostsMap, poet: Poet): Post[] {
+  const sortingFunction = poet?.options.sortingFunction || ((a: Post, b: Post) => {
       if (a.date < b.date) return 1;
       if (a.date > b.date) return -1;
       return 0;
-    });
+  });
+  return Object.keys(posts)
+    .map((post) => posts[post])
+    .sort(sortingFunction);
 }
 
 /**
