@@ -19,6 +19,8 @@ function readMoreLink (post: Post) {
   return '<p class="poet-read-more">' + anchor + '</p>';
 }
 
+export type RoutesMap<T={}> = Record<string, PoetRoutes> & T;
+
 export type PoetOptions = {
   postsPerPage: number;
   posts: string;
@@ -27,7 +29,7 @@ export type PoetOptions = {
   metaFormat: 'json' | 'yaml';
   readMoreLink: (post: Post) => string;
   readMoreTag: string;
-  routes: Record<string, PoetRoutes> | null;
+  routes: RoutesMap | null;
   sortingFunction?: (a: any, b: any) => 1 | -1 | 0;
 
   [key: string]: any;

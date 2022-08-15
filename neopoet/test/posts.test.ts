@@ -1,6 +1,6 @@
 import  Poet from '../poet';
 import  express from 'express';
-import { Post } from '../poet/defaults';
+import { Post, RoutesMap } from '../poet/defaults';
 
 const
   postPreview = '<p><em>Lorem ipsum</em> dolor sit amet, consectetur adipisicing elit.</p>',
@@ -184,7 +184,7 @@ describe('Posts', function () {
             'posts-oh-yeah/:posts': 'posts',
             'tags-oh-yeah/:tag': 'tag',
             'cats-oh-yeah/:category': 'category'
-          }
+          } as RoutesMap<{ [key: string]: 'posts' }>
         });
 
       poet.init().then(function () {

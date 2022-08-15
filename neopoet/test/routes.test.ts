@@ -4,6 +4,7 @@ import  chai    from 'chai';
 import routes  from '../poet/routes';
 import { req as reqMock, res as resMock } from './helpers/routeMocks';
 import routeInfo from './helpers/routeInfo';
+import { RoutesMap } from '../poet/defaults';
 
 const  expect  = chai.expect;
 
@@ -146,7 +147,7 @@ describe('Routes', function () {
           '/pagesss/:page': 'pageView',
           '/mytags/:tag': 'tagView',
           '/mycats/:category': 'categoryView'
-        }
+        } as RoutesMap<{ [key: string]: 'postView' | 'pageView' | 'tagView' | 'categoryView' }>
       }),
       reqPost = reqMock({ post: 'test-post-one'}),
       reqPage = reqMock({ page: 1}),
@@ -192,7 +193,7 @@ describe('Routes', function () {
         routes: {
           '/myposts/:post': 'postView',
           '/pagesss/:page': 'pageView'
-        }
+        } as RoutesMap<{ [key: string]: 'postView' | 'pageView' }>
       }),
       reqPost = reqMock({ post: 'test-post-one'}),
       reqPage = reqMock({ page: 1}),
