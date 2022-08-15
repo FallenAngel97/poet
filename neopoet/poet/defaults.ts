@@ -1,3 +1,4 @@
+import type { PoetRoutes } from './utils';
 export type Post<T = {}> = {
   url: string;
   title: string;
@@ -26,7 +27,7 @@ export type PoetOptions = {
   metaFormat: 'json' | 'yaml';
   readMoreLink: (post: Post) => string;
   readMoreTag: string;
-  routes: Record<string, string> | null;
+  routes: Record<string, PoetRoutes> | null;
   sortingFunction?: (a: any, b: any) => 1 | -1 | 0;
 
   [key: string]: any;

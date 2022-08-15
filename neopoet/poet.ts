@@ -2,7 +2,7 @@ import templateSources from './poet/templates';
 import createHelpers from './poet/helpers';
 import routes from './poet/routes';
 import methods from './poet/methods';
-import utils from './poet/utils';
+import utils, { PoetRoutes } from './poet/utils';
 import type { watch } from 'fs';
 import { Application } from 'express';
 
@@ -15,6 +15,10 @@ type PoetInitCallback = (...args: any) => void;
 type PoetWatchers = {
   watcher: ReturnType<typeof watch>;
   callback: () => void;
+}
+
+function getKeyByValue(options: Exclude<PoetOptions["routes"], null>, value: PoetRoutes): string {
+  return Object.keys(options).find(key => options[key] === value) || '';
 }
 
 export interface Poet {
@@ -77,8 +81,14 @@ export class Poet {
   getLinks(flatten: boolean) {
     const postCount = this.helpers.getPostCount();
     const posts = this.helpers.getPosts(0, postCount).map((post) => post.url);
-    const tags = this.helpers.getTags().map((tag) => `/tag/${tag}`);
-    const categories = this.helpers.getCategories().map((category) => `/category/${category}`);
+    const tags = this.helpers.getTags().map((tag) => {
+      const tagUrl = getKeyByValue(this.options.routes || {}, 'tag');
+      return tagUrl.replace(':tag',tag);
+    });
+    const categories = this.helpers.getCategories().map((category) => {
+      const categoryUrl = getKeyByValue(this.options.routes || {}, 'category');
+      return categoryUrl.replace(':category',category);
+    });
     if(flatten) {
       return [
         ...posts,
